@@ -69,7 +69,7 @@ class Calculator {
   
     putNumber(num) {
         if (this.hasResult() && !this.hasOperator()) {
-            //clears a result without an operator tying to input
+            //clears the result without operator tied to the input
             this._res = "";
         }
 
