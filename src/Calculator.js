@@ -14,7 +14,7 @@ class Calculator {
         return `In: ${this._input}, Op: ${this._opType}, Res: ${this._res}`
     }
 
-    setUpdater(upd) { this._update = upd; }//this.updateDisplay(); }
+    setUpdater(upd) { this._update = upd; }
 
     hasResult() { return Number.isFinite(this._res); }
     noResult() { return this._res === ""; } //NaN + INF are results
@@ -27,7 +27,7 @@ class Calculator {
     get result() { return this._res; }
     get input() { return this._input; }
     get operationLine() {
-        return `${!this.hasResult() ? "": this._res} ${this._opType}`;
+        return `${this.resultToString()} ${this._opType}`;
     }
   
     parseNum() {
@@ -36,14 +36,7 @@ class Calculator {
 
     resultToString() {
         if (this.hasResult() || this.noResult()) return this._res.toString();
-        else {
-            return "ERROR";
-            // switch (this._res) {
-            //     case Number.NEGATIVE_INFINITY: return "-∞";
-            //     case Number.POSITIVE_INFINITY: return "∞";
-            //     default: return "ERROR";
-            // }
-        }
+        else return "ERROR";
     }
   
     calculate() {
@@ -55,11 +48,17 @@ class Calculator {
             return;
         }
         this._res = this._op(this._res, this.parseNum());
-        this._input = "";
-        this._opType = "=";
-        this.updateDisplay();
-        this._opType = "";
-        this._op = (a, b) => a;
+        if (this.hasResult()) {
+            this._input = "";
+            this._opType = "=";
+            this.updateDisplay();
+            this.clearOp();
+        } else {
+            let message = `ERROR ${this._res}`
+            this.clear();
+            this._msg = message;
+            this.updateDisplay();
+        }
     }
 
     changeSign() {
@@ -75,36 +74,40 @@ class Calculator {
             case "0": if (this.input === num) return; break;
         }
         this._input += num;
-        // this._msg = "";
         this.updateDisplay();
     }
 
     takeNumber() {
-        if (this.noInput()) return;
+        if (this.noInput()) {
+            if (this.hasOperator()) {
+                this.clearOp();
+                this.updateDisplay();
+            }
+            return;
+        }
         this._input = this._input.slice(0, -1);
-        // this._msg = "";
         this.updateDisplay();
     }
   
     putOperator(type) {
         if (this.noInput()) { // if result exists, then start new operation
-
+            if (this.noResult()) return;
             //return;
         } else if (this.hasOperator() && this.hasResult()) {
             this.calculate();
+            if (this.noResult()) return;
         } else {
             this._res = this.parseNum();
         }
         this._opType = type;
         this._input = "";
-        // this._msg = "";
 
         switch (type) {
             case "+" : this._op = (a, b) => a + b; break;
             case "-" : this._op = (a, b) => a - b; break;
             case "×" : this._op = (a, b) => a * b; break;
             case "÷" : this._op = (a, b) => a / b; break;
-            default : this._op = (a, b) => Number.NaN;
+            default : this._op = (a, b) => a;
         }
         this.updateDisplay();
     }
@@ -126,11 +129,18 @@ class Calculator {
 
         if (!Number.isFinite(res)) {
             // result is not an finite number
+            this._msg = `ERROR: ${type.replace("x", arg)}`;
+            this._input = "";
+            res = arg;
+            this.updateDisplay();
+            return;
         }
 
         if (isInput && this.hasOperator()) {
             this._input = res.toString();
-            this.calculate();
+            this._msg = type.replace("x", arg);
+            this.updateDisplay();
+            //this.calculate();
         } else {
             this._res = res;
             this._msg = type.replace("x", arg);
@@ -141,12 +151,13 @@ class Calculator {
         }
     }
 
+    clearOp() { this._op = (a, b) => a; this._opType = ""; }
+
     clear() {
         this._input = "";
-        this._op = "";
-        this._opType = "";
-        this._res = "";//Number.NaN;
-        this._ans = "";
+        this.clearOp();
+        this._res = "";
+        //this._ans = "";
         this._msg = "";
         this.updateDisplay();
     }
@@ -184,10 +195,10 @@ class Calculator {
     updateDisplay() {
         // console.log(this.print());
         let display={upper:this.operationLine, lower:`${this._msg!=="" ? `(${this._msg}) `: ""}${this.input}`};
-        this._msg = "";
-        if (this.noInput()) display.disableDEL = true;
+        if (this._msg !=="" || this.noInput() && this.noOperator()) display.disableDEL = true;
         if (!Number.isFinite(this._ans)) display.disableANS = true;
         if (typeof this._update == "undefined" || this._update === "") return;
+        this._msg = "";
         this._update(display);
     }
   }

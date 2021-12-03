@@ -70,9 +70,23 @@ body {
   padding: 0;
 }
 
-.unary {
-  font-style: italic;
+button.operator {
+  background-color: #a0a0ff90;
 }
+
+button.unary {
+  font-style: italic;
+  background-color: #a0ffa090;
+}
+
+button.number {
+  background-color: #ffffa090;
+}
+
+button.action {
+  background-color: #ffa0a090;
+}
+
 
 .App-link {
   color: #61dafb;
