@@ -68,6 +68,11 @@ class Calculator {
     }
   
     putNumber(num) {
+        if (this.hasResult() && !this.hasOperator()) {
+            //clears a result without an operator tying to input
+            this._res = "";
+        }
+
         switch (num) {
             case ".": if (this._input.includes(num)) return; break;
             case "±": this.changeSign(); num=""; break;
@@ -147,7 +152,7 @@ class Calculator {
             this._input = "";
             this._opType = "="
             this.updateDisplay();
-            this._opType = "";
+            this.clearOp();
         }
     }
 
@@ -195,7 +200,7 @@ class Calculator {
     updateDisplay() {
         // console.log(this.print());
         let display={upper:this.operationLine, lower:`${this._msg!=="" ? `(${this._msg}) `: ""}${this.input}`};
-        if (this._msg !=="" || this.noInput() && this.noOperator()) display.disableDEL = true;
+        if (this._msg !=="" || (this.noInput() && this.noOperator())) display.disableDEL = true;
         if (!Number.isFinite(this._ans)) display.disableANS = true;
         if (typeof this._update == "undefined" || this._update === "") return;
         this._msg = "";
