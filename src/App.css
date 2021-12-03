@@ -13,15 +13,65 @@
   }
 }
 
+body {
+  background: linear-gradient(90deg, #e69df5c5, #bad893);
+}
+
 .App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
   justify-content: center;
+  align-content: center;
+  grid-template-columns: repeat(4, 100px);
+  grid-template-rows: minmax(150px, auto) repeat(6, 100px);
   font-size: calc(10px + 2vmin);
   color: white;
+}
+
+.App-header > button {
+  cursor: pointer;
+  font-size: 2rem;
+  border: 1px solid white;
+  outline: none;
+  background-color: #ffffff90;
+}
+
+.App-header > button:hover {
+  background-color: #ffffffe0;
+}
+
+.span-2 {
+  grid-column: span 2;
+}
+
+.state {
+  font-size: 1.5rem;
+  padding: 10px;
+  background-color: #000000c0;
+  grid-column: 1/-1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  flex-direction: column;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.state .current-num {
+  /* font-size: 1rem; */
+  color: #ffffffc0;
+  margin: 0;
+  padding: 0;
+}
+
+.state .current-op {
+  /* font-size: 2rem; */
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+
+.unary {
+  font-style: italic;
 }
 
 .App-link {
