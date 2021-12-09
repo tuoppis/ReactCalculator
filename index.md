@@ -8,4 +8,4 @@ Simple 'pocket' calculator implemented in react.
 
 
 ### Purpose
-Familiarizing with react stack.
+Familiarizing with the react stack.
